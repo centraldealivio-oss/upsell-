@@ -99,8 +99,8 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
     </p>
 
     <!-- IMAGEM DE DESTAQUE -->
-    <div style="max-width: 480px; margin: 0 auto 30px auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(220,38,38,0.5); box-shadow: 0 0 50px rgba(220,38,38,0.3); background: #0a0a0a;">
-      <img src="${config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/') ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png' : config.productImage}" alt="Mente Inabalável" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; image-rendering: -webkit-optimize-contrast; filter: contrast(1.08) brightness(1.04) saturate(1.12);">
+    <div style="max-width: 480px; margin: 0 auto 30px auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(220,38,38,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #09090b; padding: 4px;">
+      <img src="${config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/') ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png' : config.productImage}" alt="Mente Inabalável" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; border-radius: 12px; object-fit: contain;">
     </div>
 
     <div style="text-align: left; max-width: 480px; margin: 0 auto 30px auto;">

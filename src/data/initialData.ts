@@ -6,7 +6,7 @@ export const defaultUpsellConfig: UpsellConfig = {
   price: "9,90",
   paradiseCheckoutUrl: "https://compraonlineseguura.com/c/c3df716f02",
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
-  productImage: "https://ibb.co/MHZHcqG",
+  productImage: "https://ibb.co/JZvFRM0",
   timerMinutes: 10,
 };
 

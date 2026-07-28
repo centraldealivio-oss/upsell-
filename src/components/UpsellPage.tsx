@@ -210,7 +210,7 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
           </p>
 
           {/* PRODUCT IMAGE CONTAINER */}
-          <div className="max-w-[460px] mx-auto mb-8 rounded-2xl overflow-hidden border border-red-600/35 shadow-2xl shadow-red-950/50 bg-zinc-900">
+          <div className="max-w-[460px] mx-auto mb-8 rounded-2xl overflow-hidden border border-red-900/40 shadow-xl bg-zinc-950 p-1">
             <img
               src={
                 config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/')
@@ -218,7 +218,7 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
                   : config.productImage
               }
               alt="Mente Inabalável - Central de Alívio"
-              className="w-full h-auto object-cover select-none"
+              className="w-full h-auto object-contain select-none rounded-xl"
               referrerPolicy="no-referrer"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
