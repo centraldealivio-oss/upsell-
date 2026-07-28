@@ -38,6 +38,22 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
     if (isPreview) {
       e.preventDefault();
       onAcceptUpsell();
+      return;
+    }
+
+    // Se o cliente NÃO veio do checkout da Paradise (sem o parâmetro fpay na URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasFpay = urlParams.has('fpay') || urlParams.has('fpay_id') || urlParams.has('transaction_id');
+
+    if (!hasFpay) {
+      // Evita o erro "fpay ou offer_hash ausentes" do script e vai direto para o Checkout do Upsell
+      e.preventDefault();
+      e.stopPropagation();
+      if (config.paradiseCheckoutUrl && config.paradiseCheckoutUrl !== '#') {
+        window.location.href = config.paradiseCheckoutUrl;
+      } else {
+        onAcceptUpsell();
+      }
     }
   };
 
