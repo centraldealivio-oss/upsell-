@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { UpsellConfig } from '../types';
-import { Check, ShieldCheck, AlertTriangle, ExternalLink, Settings2, Copy, CheckCircle, Code, X, Sparkles } from 'lucide-react';
+import { Check, ShieldCheck, AlertTriangle, ExternalLink, Settings2, Copy, CheckCircle, Code, X, Sparkles, Image, Box } from 'lucide-react';
 import { CodeExporter } from './CodeExporter';
+import { BookMockup3D } from './BookMockup3D';
 
 interface UpsellPageProps {
   config: UpsellConfig;
@@ -141,8 +142,66 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
               </div>
 
               <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
+                <label className="font-bold text-amber-400 block flex items-center justify-between">
+                  <span>3. Visual do Produto na Página</span>
+                  <span className="text-[10px] text-zinc-400 font-normal">Qualidade HD</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setConfig({ ...config, useVectorMockup: true })}
+                    className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition ${
+                      config.useVectorMockup !== false
+                        ? 'border-amber-500 bg-amber-950/30 text-amber-200'
+                        : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 font-bold text-xs">
+                      <Box className="w-4 h-4 text-amber-400" />
+                      <span>Mockup 3D HD</span>
+                    </div>
+                    <span className="text-[10px] opacity-80">100% vetor nítido sem borrado</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setConfig({ ...config, useVectorMockup: false })}
+                    className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition ${
+                      config.useVectorMockup === false
+                        ? 'border-amber-500 bg-amber-950/30 text-amber-200'
+                        : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 font-bold text-xs">
+                      <Image className="w-4 h-4 text-amber-400" />
+                      <span>URL de Imagem</span>
+                    </div>
+                    <span className="text-[10px] opacity-80">Link direto de imagem externa</span>
+                  </button>
+                </div>
+
+                {config.useVectorMockup === false && (
+                  <div className="pt-2 space-y-1.5">
+                    <label className="text-[11px] text-zinc-400 block font-medium">
+                      Link Direto da Imagem (Ex: PostImage, Vercel, S3)
+                    </label>
+                    <input
+                      type="url"
+                      value={config.productImage}
+                      onChange={(e) => setConfig({ ...config, productImage: e.target.value })}
+                      placeholder="https://i.ibb.co/seu-codigo/imagem.png"
+                      className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs font-mono focus:border-red-500 outline-none"
+                    />
+                    <p className="text-[10px] text-amber-400/90 leading-tight">
+                      💡 Dica: Sites como Imgbb encurtam/compactam imagens. Para máxima definição sem borrado, use o <strong>Mockup 3D HD</strong> acima ou cole um link de imagem em alta resolução.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
                 <label className="font-bold text-zinc-200 block">
-                  3. Preço do Upsell (R$)
+                  4. Preço do Upsell (R$)
                 </label>
                 <input
                   type="text"
@@ -209,32 +268,38 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
             {config.subheadline}
           </p>
 
-          {/* PRODUCT IMAGE CONTAINER */}
-          <div className="max-w-[460px] mx-auto mb-8 rounded-2xl overflow-hidden border border-red-900/40 shadow-xl bg-zinc-950 p-1">
-            <img
-              src={
-                config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/')
-                  ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png'
-                  : config.productImage
-              }
-              alt="Mente Inabalável - Central de Alívio"
-              className="w-full h-auto object-contain select-none rounded-xl"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                if (!target.dataset.triedJpg) {
-                  target.dataset.triedJpg = 'true';
-                  target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.jpg';
-                } else if (!target.dataset.triedWebp) {
-                  target.dataset.triedWebp = 'true';
-                  target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.webp';
-                } else if (!target.dataset.triedRaw) {
-                  target.dataset.triedRaw = 'true';
-                  target.src = config.productImage;
+          {/* PRODUCT IMAGE OR 3D VECTOR MOCKUP */}
+          {config.useVectorMockup !== false ? (
+            <div className="mb-8">
+              <BookMockup3D />
+            </div>
+          ) : (
+            <div className="max-w-[460px] mx-auto mb-8 rounded-2xl overflow-hidden border border-red-900/40 shadow-xl bg-zinc-950 p-1">
+              <img
+                src={
+                  config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/')
+                    ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png'
+                    : config.productImage
                 }
-              }}
-            />
-          </div>
+                alt="Mente Inabalável - Central de Alívio"
+                className="w-full h-auto object-contain select-none rounded-xl"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.dataset.triedJpg) {
+                    target.dataset.triedJpg = 'true';
+                    target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.jpg';
+                  } else if (!target.dataset.triedWebp) {
+                    target.dataset.triedWebp = 'true';
+                    target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.webp';
+                  } else if (!target.dataset.triedRaw) {
+                    target.dataset.triedRaw = 'true';
+                    target.src = config.productImage;
+                  }
+                }}
+              />
+            </div>
+          )}
 
           {/* CHECKLIST HIGHLIGHTS */}
           <div className="max-w-[480px] mx-auto text-left space-y-3 mb-8 text-zinc-300 text-sm">

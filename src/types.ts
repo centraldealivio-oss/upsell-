@@ -44,4 +44,5 @@ export interface UpsellConfig {
   declineUrl: string;
   productImage: string;
   timerMinutes: number;
+  useVectorMockup?: boolean;
 }

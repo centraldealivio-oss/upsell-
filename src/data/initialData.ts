@@ -8,6 +8,7 @@ export const defaultUpsellConfig: UpsellConfig = {
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
   productImage: "https://ibb.co/JZvFRM0",
   timerMinutes: 10,
+  useVectorMockup: true,
 };
 
 export const bonusModulesData: BonusModule[] = [
