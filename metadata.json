@@ -1,0 +1,6 @@
+{
+  "name": "Página de Upsell - Mente Inabalável",
+  "description": "Página de Upsell e Simulador de Área de Membros com Integração Paradise para o produto Antes da Explosão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
