@@ -57,14 +57,33 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
   }
   .lp-btn:hover { background-color: #b91c1c; transform: scale(1.03); }
   .lp-btn-ghost {
-    display: inline-block;
-    background: transparent;
-    color: #71717a !important;
+    display: block;
+    background: rgba(24, 24, 27, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #d4d4d8 !important;
     font-weight: 600;
     text-decoration: underline !important;
-    padding: 12px 20px;
-    font-size: 13px;
-    margin-top: 12px;
+    padding: 14px 20px;
+    font-size: 15px;
+    margin: 16px auto 0 auto;
+    max-width: 540px;
+    transition: all 0.2s ease;
+  }
+  .lp-btn-ghost:hover {
+    background: rgba(39, 39, 42, 0.8);
+    color: #ffffff !important;
+  }
+  .lp-price-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #09090b 0%, #064e3b 100%);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    padding: 10px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
   }
   .lp-card {
     background-color: #0a0a0a;
@@ -98,59 +117,25 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
       ${config.subheadline}
     </p>
 
-    <!-- MOCKUP 3D DE ALTA DEFINIÇÃO SEM BORRADO -->
-    ${config.useVectorMockup !== false ? `
-    <div style="max-width: 580px; margin: 0 auto 30px auto; padding: 10px; position: relative;">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; perspective: 1000px;">
-        <!-- Livro 1 - Verde -->
-        <div style="width: 150px; height: 260px; background: linear-gradient(135deg, #18181b 0%, #000 100%); border: 1px solid rgba(16,185,129,0.4); border-radius: 4px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transform: rotateY(-15deg); box-shadow: -10px 15px 30px rgba(0,0,0,0.8);">
-          <span style="background: rgba(6,78,59,0.8); border: 1px solid rgba(16,185,129,0.5); color: #34d399; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 1px;">BÔNUS 1</span>
-          <div>
-            <div style="font-size: 24px; color: #34d399; margin-bottom: 8px;">🛡️</div>
-            <div style="color: #fde68a; font-size: 11px; font-weight: 900; letter-spacing: 1px; font-family: serif; line-height: 1.2;">BLINDAGEM<br>DO VÍNCULO</div>
-            <div style="height: 1px; background: rgba(16,185,129,0.5); width: 30px; margin: 6px auto;"></div>
-            <div style="color: #a1a1aa; font-size: 7px; text-transform: uppercase;">Fortaleça o que te sustenta</div>
-          </div>
-          <div style="border-top: 1px solid rgba(16,185,129,0.2); pt: 4px; font-size: 7px; color: #fde68a; font-family: serif;">ISABELLA XAVIER</div>
-        </div>
+    <!-- MOCKUP DOS LIVROS REAIS DE ALTA DEFINIÇÃO (QUALIDADE ORIGINAL DA FOTO) -->
+    <div style="max-width: 800px; margin: 0 auto 30px auto;">
+      <img src="${config.productImage.includes('ibb.co/LDymbnzd') ? 'https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png' : config.productImage.includes('ibb.co/Q3vt1Xjv') ? 'https://i.ibb.co/cShV7xXh/Captura-de-tela-2026-07-28-163516.png' : config.productImage}" alt="Mente Inabalável - 3 Livros" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; object-fit: contain; margin: 0 auto;">
+    </div>
 
-        <!-- Livro 2 - Roxo (Destaque Centro) -->
-        <div style="width: 170px; height: 290px; background: linear-gradient(135deg, #18181b 0%, #2e1065 50%, #000 100%); border: 1px solid rgba(192,132,252,0.5); border-radius: 4px; padding: 14px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; box-shadow: 0 20px 40px rgba(0,0,0,0.9), 0 0 20px rgba(168,85,247,0.3);">
-          <span style="background: rgba(88,28,135,0.8); border: 1px solid rgba(192,132,252,0.6); color: #e9d5ff; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px;">E-BOOK PRINCIPAL</span>
-          <div>
-            <div style="font-size: 28px; color: #d8b4fe; margin-bottom: 8px;">👁️</div>
-            <div style="color: #fef08a; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; font-family: serif; line-height: 1.2;">RAIO-X DO<br>GATILHO</div>
-            <div style="height: 1px; background: rgba(253,224,71,0.6); width: 40px; margin: 8px auto;"></div>
-            <div style="color: #e4e4e7; font-size: 8px; text-transform: uppercase;">Identifique o que desencadeia</div>
-          </div>
-          <div style="border-top: 1px solid rgba(192,132,252,0.3); pt: 6px; font-size: 8px; color: #fde68a; font-weight: bold; font-family: serif;">ISABELLA XAVIER</div>
-        </div>
-
-        <!-- Livro 3 - Vermelho -->
-        <div style="width: 150px; height: 260px; background: linear-gradient(135deg, #18181b 0%, #000 100%); border: 1px solid rgba(239,68,68,0.4); border-radius: 4px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transform: rotateY(15deg); box-shadow: 10px 15px 30px rgba(0,0,0,0.8);">
-          <span style="background: rgba(127,29,29,0.8); border: 1px solid rgba(239,68,68,0.5); color: #fca5a5; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 1px;">BÔNUS 2</span>
-          <div>
-            <div style="font-size: 24px; color: #fca5a5; margin-bottom: 8px;">❤️</div>
-            <div style="color: #fde68a; font-size: 11px; font-weight: 900; letter-spacing: 1px; font-family: serif; line-height: 1.2;">PROTOCOLO<br>100 BPM</div>
-            <div style="height: 1px; background: rgba(239,68,68,0.5); width: 30px; margin: 6px auto;"></div>
-            <div style="color: #a1a1aa; font-size: 7px; text-transform: uppercase;">Acalme o coração</div>
-          </div>
-          <div style="border-top: 1px solid rgba(239,68,68,0.2); pt: 4px; font-size: 7px; color: #fde68a; font-family: serif;">ISABELLA XAVIER</div>
-        </div>
-      </div>
-    </div>` : `
-    <div style="max-width: 480px; margin: 0 auto 30px auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(220,38,38,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #09090b; padding: 4px;">
-      <img src="${config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/') ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png' : config.productImage}" alt="Mente Inabalável" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; border-radius: 12px; object-fit: contain;">
-    </div>`}
-
-    <div style="text-align: left; max-width: 480px; margin: 0 auto 30px auto;">
+    <div style="text-align: left; max-width: 500px; margin: 0 auto 24px auto;">
       <div class="lp-checkline"><span class="lp-check">✓</span> Complemento oficial do Método Antes da Explosão, feito para fechar sua jornada com segurança</div>
       <div class="lp-checkline"><span class="lp-check">✓</span> Sem novo cadastro — liberado junto ao material que você já garantiu na Paradise</div>
       <div class="lp-checkline"><span class="lp-check">✓</span> Acesso imediato, pensado para você se sentir amparada em cada etapa</div>
     </div>
 
+    <!-- DESTAQUE DE PREÇO -->
+    <div class="lp-price-tag">
+      <span style="color: #d4d4d8; font-size: 14px; font-weight: 500;">De <span style="text-decoration: line-through; color: #71717a;">R$ 97,00</span> por apenas:</span>
+      <span style="color: #34d399; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">R$ ${config.price}</span>
+    </div>
+
     <div>
-      <button class="paradise-upsell-btn" onclick="window.location.href='${config.paradiseCheckoutUrl}'" style="background-color: #28a745; color: #ffffff; padding: 16px 28px; border: none; border-radius: 8px; font-size: 17px; font-weight: bold; cursor: pointer; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta!</button>
+      <button class="paradise-upsell-btn" onclick="window.location.href='${config.paradiseCheckoutUrl}'" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta por apenas R$ ${config.price}!</button>
       <br>
       <a href="${config.declineUrl}" class="lp-btn-ghost">Não, obrigada. Prefiro seguir sem este complemento.</a>
     </div>

@@ -1,12 +1,12 @@
 import { BonusModule, CommunityPost, UpsellConfig } from '../types';
 
 export const defaultUpsellConfig: UpsellConfig = {
-  headline: "Você já entendeu a raiz do seu padrão. Agora falta a parte que sustenta essa calma no dia em que o gatilho realmente aparecer.",
-  subheadline: "Entender por que você reage é metade do caminho. Mente Inabalável é a outra metade: o que te dá segurança para agir diferente no instante exato em que o corpo já está tenso e o coração acelerado.",
+  headline: "Seu primeiro passo já está garantido. Falta a parte que te ajuda a agir diferente no instante em que o coração passa de 100 batimentos e a razão desliga.",
+  subheadline: "Entender a origem do gatilho é metade do caminho — e essa parte você já garantiu. A outra metade não fica só na teoria: é ter uma resposta pronta pro momento em que o corpo já está tenso, o coração acelerado, e a cabeça ainda não alcançou.",
   price: "9,90",
   paradiseCheckoutUrl: "https://compraonlineseguura.com/c/c3df716f02",
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
-  productImage: "https://ibb.co/JZvFRM0",
+  productImage: "https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png",
   timerMinutes: 10,
   useVectorMockup: true,
 };

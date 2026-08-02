@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UpsellConfig } from '../types';
 import { Check, ShieldCheck, AlertTriangle, ExternalLink, Settings2, Copy, CheckCircle, Code, X, Sparkles, Image, Box } from 'lucide-react';
 import { CodeExporter } from './CodeExporter';
-import { BookMockup3D } from './BookMockup3D';
+import { BookMockup3D, resolveImageUrl } from './BookMockup3D';
 
 interface UpsellPageProps {
   config: UpsellConfig;
@@ -268,41 +268,13 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
             {config.subheadline}
           </p>
 
-          {/* PRODUCT IMAGE OR 3D VECTOR MOCKUP */}
-          {config.useVectorMockup !== false ? (
-            <div className="mb-8">
-              <BookMockup3D />
-            </div>
-          ) : (
-            <div className="max-w-[460px] mx-auto mb-8 rounded-2xl overflow-hidden border border-red-900/40 shadow-xl bg-zinc-950 p-1">
-              <img
-                src={
-                  config.productImage.includes('ibb.co/') && !config.productImage.includes('i.ibb.co/')
-                    ? config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.png'
-                    : config.productImage
-                }
-                alt="Mente Inabalável - Central de Alívio"
-                className="w-full h-auto object-contain select-none rounded-xl"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  if (!target.dataset.triedJpg) {
-                    target.dataset.triedJpg = 'true';
-                    target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.jpg';
-                  } else if (!target.dataset.triedWebp) {
-                    target.dataset.triedWebp = 'true';
-                    target.src = config.productImage.replace('ibb.co/', 'i.ibb.co/') + '/image.webp';
-                  } else if (!target.dataset.triedRaw) {
-                    target.dataset.triedRaw = 'true';
-                    target.src = config.productImage;
-                  }
-                }}
-              />
-            </div>
-          )}
+          {/* PRODUCT IMAGE DISPLAY */}
+          <div className="mb-8">
+            <BookMockup3D imageUrl={config.productImage} />
+          </div>
 
           {/* CHECKLIST HIGHLIGHTS */}
-          <div className="max-w-[480px] mx-auto text-left space-y-3 mb-8 text-zinc-300 text-sm">
+          <div className="max-w-[500px] mx-auto text-left space-y-3 mb-8 text-zinc-300 text-sm">
             <div className="flex items-start gap-2.5">
               <span className="text-red-500 font-extrabold text-base flex-shrink-0">✓</span>
               <span>
@@ -323,17 +295,23 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
             </div>
           </div>
 
+          {/* PRICE CALLOUT BADGE */}
+          <div className="mb-6 inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-zinc-950 via-emerald-950/60 to-zinc-950 border border-emerald-500/50 px-6 py-3 rounded-2xl shadow-xl">
+            <span className="text-zinc-300 text-xs sm:text-sm font-medium">De <span className="line-through text-zinc-500">R$ 97,00</span> por apenas:</span>
+            <span className="text-emerald-400 font-black text-xl sm:text-2xl tracking-tight">R$ {config.price}</span>
+          </div>
+
           {/* MAIN CTA BUTTONS */}
-          <div className="space-y-3 max-w-[540px] mx-auto">
+          <div className="space-y-4 max-w-[560px] mx-auto">
             <button
-              className="paradise-upsell-btn w-full shadow-lg shadow-emerald-900/30 hover:brightness-110 transition transform active:scale-95 flex items-center justify-center gap-2"
+              className="paradise-upsell-btn w-full shadow-xl shadow-emerald-900/30 hover:brightness-110 transition transform active:scale-95 flex items-center justify-center gap-2"
               style={{
                 backgroundColor: '#28a745',
                 color: '#ffffff',
-                padding: '16px 24px',
+                padding: '18px 24px',
                 border: 'none',
-                borderRadius: '8px',
-                fontSize: '17px',
+                borderRadius: '10px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 width: '100%'
@@ -347,12 +325,12 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
               data-modal-btn-text-color="#ffffff"
               onClick={handleAcceptClick}
             >
-              Sim, eu quero esta oferta!
+              Sim, eu quero esta oferta por apenas R$ {config.price}!
             </button>
 
             <button
               onClick={onDeclineUpsell}
-              className="inline-block text-zinc-500 hover:text-zinc-300 text-xs font-semibold underline decoration-zinc-700 underline-offset-4 py-2 px-4 transition cursor-pointer"
+              className="w-full text-zinc-300 hover:text-white text-sm sm:text-base font-semibold underline underline-offset-4 py-3.5 px-5 rounded-xl border border-zinc-800/80 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/80 transition cursor-pointer shadow-md"
             >
               Não, obrigada. Prefiro seguir sem este complemento.
             </button>
