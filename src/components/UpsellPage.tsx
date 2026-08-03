@@ -5,11 +5,11 @@ import { CodeExporter } from './CodeExporter';
 import { BookMockup3D, resolveImageUrl } from './BookMockup3D';
 import { computeDynamicCheckoutUrl, ComputedUrlResult } from '../lib/urlUtils';
 
-interface UpsellPageProps {
+  interface UpsellPageProps {
   config: UpsellConfig;
   setConfig: React.Dispatch<React.StateAction<UpsellConfig>>;
   onAcceptUpsell: (customTargetUrl?: string) => void;
-  onDeclineUpsell: () => void;
+  onDeclineUpsell: (customDeclineUrl?: string) => void;
 }
 
 export const UpsellPage: React.FC<UpsellPageProps> = ({
@@ -492,7 +492,7 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
             </button>
 
             <button
-              onClick={onDeclineUpsell}
+              onClick={() => onDeclineUpsell(computedResult.declineUrl)}
               className="w-full text-zinc-300 hover:text-white text-sm sm:text-base font-semibold underline underline-offset-4 py-3.5 px-5 rounded-xl border border-zinc-800/80 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/80 transition cursor-pointer shadow-md"
             >
               Não, obrigada. Prefiro seguir sem este complemento.

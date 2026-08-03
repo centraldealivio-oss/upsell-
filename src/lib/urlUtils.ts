@@ -2,6 +2,7 @@ import { UpsellConfig } from '../types';
 
 export interface ComputedUrlResult {
   url: string;
+  declineUrl: string;
   matchedRuleName?: string;
   tokenDetected?: string;
   isCustomParamActive: boolean;
@@ -21,11 +22,39 @@ export function computeDynamicCheckoutUrl(
   const urlParams = new URLSearchParams(searchStr);
 
   let targetBaseUrl = config.paradiseCheckoutUrl || 'https://compraonlineseguura.com/c/eb3f66e437';
+  let targetDeclineUrl = config.declineUrl || 'https://area.centraldealivio.com.br/?token=PARADISE-STD-1234';
   let matchedRuleName: string | undefined = undefined;
   let isCustomParamActive = false;
 
-  // 1. Check if any configured bonus rule matches query params in URL
-  if (config.bonusRules && config.bonusRules.length > 0 && searchStr) {
+  const hasB1 = urlParams.get('b1') === '1' || urlParams.get('b1') === 'true' || urlParams.get('ob1') === '1';
+  const hasB2 = urlParams.get('b2') === '1' || urlParams.get('b2') === 'true' || urlParams.get('ob2') === '1';
+  const hasB3 = urlParams.get('b3') === '1' || urlParams.get('b3') === 'true' || urlParams.get('ob3') === '1';
+  const isSupremoFlag = urlParams.get('supremo') === 'true' || urlParams.get('supremo') === '1';
+  const isComboFlag = urlParams.get('combo') === 'true' || urlParams.get('combo') === '1';
+
+  // 1. Prioridade Máxima: Se o cliente comprou TODOS os 3 order bumps no checkout anterior (SUPREMO / ALL-BONUSES)
+  if ((hasB1 && hasB2 && hasB3) || isSupremoFlag) {
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999';
+    matchedRuleName = '👑 Nível SUPREMO (Comunidade VIP Black)';
+    isCustomParamActive = true;
+  } else if (isComboFlag) {
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES';
+    matchedRuleName = '5. Combo Completo (Principal + Todos os 3 Bônus)';
+    isCustomParamActive = true;
+  } else if (hasB1 && !hasB2 && !hasB3) {
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS1-BPM100';
+    matchedRuleName = '2. Principal + Bônus 1 (Protocolo 100 BPM)';
+    isCustomParamActive = true;
+  } else if (hasB2 && !hasB1 && !hasB3) {
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS2-GATILHO';
+    matchedRuleName = '3. Principal + Bônus 2 (Raio-X do Gatilho)';
+    isCustomParamActive = true;
+  } else if (hasB3 && !hasB1 && !hasB2) {
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS3-VINCULO';
+    matchedRuleName = '4. Principal + Bônus 3 (Blindagem do Vínculo)';
+    isCustomParamActive = true;
+  } else if (config.bonusRules && config.bonusRules.length > 0 && searchStr) {
+    // Regras personalizadas adicionais
     for (const rule of config.bonusRules) {
       if (!rule.paramKey) continue;
       const paramVal = urlParams.get(rule.paramKey);
@@ -37,8 +66,9 @@ export function computeDynamicCheckoutUrl(
           (rule.paramValue === '1' && (paramVal === 'true' || paramVal === '1')) ||
           paramVal.toLowerCase() === rule.paramValue.toLowerCase();
 
-        if (isMatch && rule.checkoutUrl) {
-          targetBaseUrl = rule.checkoutUrl;
+        if (isMatch) {
+          if (rule.checkoutUrl) targetBaseUrl = rule.checkoutUrl;
+          if (rule.declineUrl) targetDeclineUrl = rule.declineUrl;
           matchedRuleName = rule.bonusName;
           isCustomParamActive = true;
           break;
@@ -47,7 +77,7 @@ export function computeDynamicCheckoutUrl(
     }
   }
 
-  // 2. Direct token parameter (e.g., ?token=14da32acba or ?c=cd7eb4c0c6)
+  // 2. Token explícito passado pela Paradise no link de redirecionamento (ex: ?token=PARADISE-SUPREMO-9999)
   const directToken =
     urlParams.get('token') ||
     urlParams.get('token_id') ||
@@ -60,7 +90,20 @@ export function computeDynamicCheckoutUrl(
     tokenDetected = directToken;
     isCustomParamActive = true;
 
-    if (directToken.startsWith('http://') || directToken.startsWith('https://')) {
+    if (directToken.startsWith('TOKEN-') || directToken.startsWith('PARADISE-')) {
+      targetDeclineUrl = `https://area.centraldealivio.com.br/?token=${directToken}`;
+      if (directToken === 'PARADISE-SUPREMO-9999') {
+        matchedRuleName = '👑 Nível SUPREMO (Comunidade VIP Black)';
+      } else if (directToken === 'TOKEN-ALL-BONUSES') {
+        matchedRuleName = '5. Combo Completo (Todos os Bônus)';
+      } else if (directToken === 'TOKEN-BONUS1-BPM100') {
+        matchedRuleName = '2. Principal + Bônus 1';
+      } else if (directToken === 'TOKEN-BONUS2-GATILHO') {
+        matchedRuleName = '3. Principal + Bônus 2';
+      } else if (directToken === 'TOKEN-BONUS3-VINCULO') {
+        matchedRuleName = '4. Principal + Bônus 3';
+      }
+    } else if (directToken.startsWith('http://') || directToken.startsWith('https://')) {
       targetBaseUrl = directToken;
     } else if (directToken.length >= 5) {
       if (targetBaseUrl.includes('/c/')) {
@@ -71,7 +114,7 @@ export function computeDynamicCheckoutUrl(
     }
   }
 
-  // 3. Preserve/forward tracking parameters (UTMs, fpay_id, transaction_id, etc.)
+  // 3. Manter/Repassar parâmetros de tracking no link do botão de recusa
   if (config.forwardUrlParams !== false && searchStr) {
     try {
       const urlObj = new URL(targetBaseUrl);
@@ -88,10 +131,23 @@ export function computeDynamicCheckoutUrl(
         targetBaseUrl += `${separator}${cleanSearch}`;
       }
     }
+
+    try {
+      const declObj = new URL(targetDeclineUrl);
+      urlParams.forEach((value, key) => {
+        if (key !== 'token' && !declObj.searchParams.has(key)) {
+          declObj.searchParams.set(key, value);
+        }
+      });
+      targetDeclineUrl = declObj.toString();
+    } catch {
+      // ignore invalid decline URL format
+    }
   }
 
   return {
     url: targetBaseUrl,
+    declineUrl: targetDeclineUrl,
     matchedRuleName,
     tokenDetected,
     isCustomParamActive,

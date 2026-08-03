@@ -42,6 +42,7 @@ export interface BonusTokenRule {
   paramKey: string;    // e.g. 'token', 'ob', 'b1', 'orderbump'
   paramValue: string; // e.g. '1', 'bonus1', '14da32acba', 'all'
   checkoutUrl: string; // e.g. 'https://compraonlineseguura.com/c/14da32acba'
+  declineUrl?: string; // e.g. 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS1-BPM100'
   description?: string;
 }
 

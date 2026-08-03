@@ -20,27 +20,14 @@ export default function App() {
   };
 
   // When customer clicks "Decline"
-  const handleDeclineUpsell = () => {
-    if (upsellConfig.declineUrl && upsellConfig.declineUrl !== '#' && upsellConfig.declineUrl !== '#decline') {
-      let declineTarget = upsellConfig.declineUrl;
-      // forward url parameters if present
-      if (typeof window !== 'undefined' && window.location.search && upsellConfig.forwardUrlParams !== false) {
-        try {
-          const urlObj = new URL(declineTarget);
-          const currentParams = new URLSearchParams(window.location.search);
-          currentParams.forEach((val, key) => {
-            if (!urlObj.searchParams.has(key)) {
-              urlObj.searchParams.set(key, val);
-            }
-          });
-          declineTarget = urlObj.toString();
-        } catch {
-          declineTarget += (declineTarget.includes('?') ? '&' : '?') + window.location.search.replace(/^\?/, '');
-        }
-      }
+  const handleDeclineUpsell = (customDeclineUrl?: string) => {
+    const computed = computeDynamicCheckoutUrl(upsellConfig);
+    const declineTarget = customDeclineUrl || computed.declineUrl || upsellConfig.declineUrl;
+
+    if (declineTarget && declineTarget !== '#' && declineTarget !== '#decline') {
       window.location.href = declineTarget;
     } else {
-      alert("Para testar o redirecionamento, insira o link da sua Área de Membros Padrão no botão ⚙️ de configurações (no canto superior direito).");
+      alert("Para testar o redirecionamento, insira o link da sua Área de Membros Padrão nas configurações.");
     }
   };
 

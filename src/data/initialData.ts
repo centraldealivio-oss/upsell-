@@ -14,35 +14,57 @@ export const defaultUpsellConfig: UpsellConfig = {
   bonusRules: [
     {
       id: 'rule-combo-all',
-      bonusName: 'Combo Completo (Interesse nos 3 Bônus)',
+      bonusName: '5. Combo Completo (Principal + Todos os 3 Bônus)',
       paramKey: 'combo',
       paramValue: 'true',
       checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
-      description: 'Oferece o pacote com os 3 bônus integrados por R$ 24,50'
+      declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES',
+      description: 'Liberado: Ebook + Audiobook + Bônus 1 + Bônus 2 + Bônus 3'
     },
     {
       id: 'rule-b1',
-      bonusName: 'Bônus 1: Protocolo de Regulação',
+      bonusName: '2. Principal + Bônus 1 (Protocolo 100 BPM)',
       paramKey: 'b1',
       paramValue: '1',
       checkoutUrl: 'https://compraonlineseguura.com/c/14da32acba',
-      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 1'
+      declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS1-BPM100',
+      description: 'Liberado: Produto Principal + Bônus 1 (Áudios SOS & Bio-Feedback)'
     },
     {
       id: 'rule-b2',
-      bonusName: 'Bônus 2: Mapa Pessoal do Gatilho',
+      bonusName: '3. Principal + Bônus 2 (Raio-X do Gatilho)',
       paramKey: 'b2',
       paramValue: '1',
       checkoutUrl: 'https://compraonlineseguura.com/c/cd7eb4c0c6',
-      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 2'
+      declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS2-GATILHO',
+      description: 'Liberado: Produto Principal + Bônus 2 (Diagnosticador Neuro-Comportamental)'
     },
     {
       id: 'rule-b3',
-      bonusName: 'Bônus 3: Guia de Reconexão',
+      bonusName: '4. Principal + Bônus 3 (Blindagem do Vínculo)',
       paramKey: 'b3',
       paramValue: '1',
       checkoutUrl: 'https://compraonlineseguura.com/c/f2a3b0f24e',
-      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 3'
+      declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS3-VINCULO',
+      description: 'Liberado: Produto Principal + Bônus 3 (Gerador de Acordo/Contrato)'
+    },
+    {
+      id: 'rule-std',
+      bonusName: '1. Somente Produto Principal (Ebook + Audiobook)',
+      paramKey: 'std',
+      paramValue: '1',
+      checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
+      declineUrl: 'https://area.centraldealivio.com.br/?token=PARADISE-STD-1234',
+      description: 'Liberado: Ebook "Antes da Explosão" + Narração MP3'
+    },
+    {
+      id: 'rule-supremo',
+      bonusName: '👑 Nível SUPREMO (Comunidade VIP Black)',
+      paramKey: 'supremo',
+      paramValue: 'true',
+      checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
+      declineUrl: 'https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999',
+      description: 'Liberado: Produto Principal + 3 Bônus + Acesso à Comunidade VIP Black'
     }
   ]
 };

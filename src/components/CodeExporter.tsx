@@ -89,11 +89,50 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
       var declineLink = document.querySelector(".lp-btn-ghost");
       if (declineLink && window.location.search) {
         var declTarget = declineBase;
+        var p = new URLSearchParams(window.location.search);
+
+        // Check order bumps & tokens for decline link redirection
+        var hasB1 = p.get('b1') === '1' || p.get('b1') === 'true' || p.get('ob1') === '1';
+        var hasB2 = p.get('b2') === '1' || p.get('b2') === 'true' || p.get('ob2') === '1';
+        var hasB3 = p.get('b3') === '1' || p.get('b3') === 'true' || p.get('ob3') === '1';
+        var isSupremo = p.get('supremo') === 'true' || p.get('supremo') === '1';
+        var isCombo = p.get('combo') === 'true' || p.get('combo') === '1';
+
+        if ((hasB1 && hasB2 && hasB3) || isSupremo) {
+          declTarget = "https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999";
+        } else if (isCombo) {
+          declTarget = "https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES";
+        } else if (hasB1 && !hasB2 && !hasB3) {
+          declTarget = "https://area.centraldealivio.com.br/?token=TOKEN-BONUS1-BPM100";
+        } else if (hasB2 && !hasB1 && !hasB3) {
+          declTarget = "https://area.centraldealivio.com.br/?token=TOKEN-BONUS2-GATILHO";
+        } else if (hasB3 && !hasB1 && !hasB2) {
+          declTarget = "https://area.centraldealivio.com.br/?token=TOKEN-BONUS3-VINCULO";
+        } else {
+          // Check rules array for custom declineUrl
+          for (var j = 0; j < rules.length; j++) {
+            var r2 = rules[j];
+            if (!r2.paramKey) continue;
+            var val2 = p.get(r2.paramKey);
+            if (val2 !== null && (val2 === r2.paramValue || r2.paramValue === '*' || (r2.paramValue === '1' && (val2 === 'true' || val2 === '1')))) {
+              if (r2.declineUrl) {
+                declTarget = r2.declineUrl;
+                break;
+              }
+            }
+          }
+        }
+
+        // Direct token parameter for member area (ex: ?token=PARADISE-SUPREMO-9999)
+        var tokenVal = p.get('token') || p.get('token_id');
+        if (tokenVal && (tokenVal.indexOf('TOKEN-') === 0 || tokenVal.indexOf('PARADISE-') === 0)) {
+          declTarget = "https://area.centraldealivio.com.br/?token=" + tokenVal;
+        }
+
         try {
           var declObj = new URL(declTarget);
-          var p = new URLSearchParams(window.location.search);
           p.forEach(function(v, k) {
-            if (!declObj.searchParams.has(k)) declObj.searchParams.set(k, v);
+            if (k !== 'token' && !declObj.searchParams.has(k)) declObj.searchParams.set(k, v);
           });
           declTarget = declObj.toString();
         } catch(err) {
