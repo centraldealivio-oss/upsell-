@@ -10,8 +10,100 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
   const [copied, setCopied] = useState(false);
   const [format, setFormat] = useState<'standalone' | 'wordpress'>('standalone');
 
+  const rulesJson = JSON.stringify(config.bonusRules || []);
+
   const rawHtmlCode = `<!-- SCRIPT PARADISE ONE-CLICK UPSELL -->
 <script src="https://multi.paradisepags.com/assets/js/one-click.js?v=1785262002" defer></script>
+
+<!-- AUTOMAÇÃO DE REDIRECIONAMENTO DINÂMICO POR BÔNUS / TOKEN -->
+<script>
+  (function() {
+    var defaultUrl = "${config.paradiseCheckoutUrl}";
+    var rules = ${rulesJson};
+    var declineBase = "${config.declineUrl}";
+
+    function getTargetUrl() {
+      var searchStr = window.location.search;
+      if (!searchStr) return defaultUrl;
+
+      var params = new URLSearchParams(searchStr);
+      var target = defaultUrl;
+
+      // 1. Mapeamento por Regras de Bônus / Order Bumps
+      for (var i = 0; i < rules.length; i++) {
+        var r = rules[i];
+        if (!r.paramKey) continue;
+        var val = params.get(r.paramKey);
+        if (val !== null && (val === r.paramValue || r.paramValue === '*' || (r.paramValue === '1' && (val === 'true' || val === '1')))) {
+          if (r.checkoutUrl) {
+            target = r.checkoutUrl;
+            break;
+          }
+        }
+      }
+
+      // 2. Token direto na URL (ex: ?token=SEUTOKEN ou ?checkout=...)
+      var directToken = params.get('token') || params.get('token_id') || params.get('checkout') || params.get('c');
+      if (directToken) {
+        if (directToken.indexOf('http') === 0) {
+          target = directToken;
+        } else if (directToken.length >= 5) {
+          if (target.indexOf('/c/') !== -1) {
+            target = target.replace(/\\/c\\/[a-zA-Z0-9]+/, '/c/' + directToken);
+          } else {
+            target = 'https://compraonlineseguura.com/c/' + directToken;
+          }
+        }
+      }
+
+      // 3. Repassar parâmetros de rastreamento (UTMs, fpay_id, transaction_id)
+      try {
+        var urlObj = new URL(target);
+        params.forEach(function(value, key) {
+          if (!urlObj.searchParams.has(key)) {
+            urlObj.searchParams.set(key, value);
+          }
+        });
+        target = urlObj.toString();
+      } catch (e) {
+        target += (target.indexOf('?') !== -1 ? '&' : '?') + searchStr.replace(/^\\?/, '');
+      }
+
+      return target;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var activeTargetUrl = getTargetUrl();
+      var buyBtn = document.querySelector(".paradise-upsell-btn");
+      if (buyBtn) {
+        buyBtn.onclick = function(e) {
+          var hasFpay = window.location.search.indexOf("fpay") !== -1 || window.location.search.indexOf("transaction_id") !== -1;
+          if (!hasFpay) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = activeTargetUrl;
+          }
+        };
+      }
+
+      var declineLink = document.querySelector(".lp-btn-ghost");
+      if (declineLink && window.location.search) {
+        var declTarget = declineBase;
+        try {
+          var declObj = new URL(declTarget);
+          var p = new URLSearchParams(window.location.search);
+          p.forEach(function(v, k) {
+            if (!declObj.searchParams.has(k)) declObj.searchParams.set(k, v);
+          });
+          declTarget = declObj.toString();
+        } catch(err) {
+          declTarget += (declTarget.indexOf('?') !== -1 ? '&' : '?') + window.location.search.replace(/^\\?/, '');
+        }
+        declineLink.href = declTarget;
+      }
+    });
+  })();
+</script>
 
 <!-- LANDING PAGE DE UPSELL - MENTE INABALÁVEL (CENTRAL DE ALÍVIO) -->
 <style>
@@ -117,7 +209,7 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
       ${config.subheadline}
     </p>
 
-    <!-- MOCKUP DOS LIVROS REAIS DE ALTA DEFINIÇÃO (QUALIDADE ORIGINAL DA FOTO) -->
+    <!-- MOCKUP DOS LIVROS REAIS DE ALTA DEFINIÇÃO -->
     <div style="max-width: 800px; margin: 0 auto 30px auto;">
       <img src="${config.productImage.includes('ibb.co/LDymbnzd') ? 'https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png' : config.productImage.includes('ibb.co/Q3vt1Xjv') ? 'https://i.ibb.co/cShV7xXh/Captura-de-tela-2026-07-28-163516.png' : config.productImage}" alt="Mente Inabalável - 3 Livros" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; object-fit: contain; margin: 0 auto;">
     </div>
@@ -135,13 +227,11 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
     </div>
 
     <div>
-      <button class="paradise-upsell-btn" onclick="window.location.href='${config.paradiseCheckoutUrl}'" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta por apenas R$ ${config.price}!</button>
+      <button class="paradise-upsell-btn" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta por apenas R$ ${config.price}!</button>
       <br>
       <a href="${config.declineUrl}" class="lp-btn-ghost">Não, obrigada. Prefiro seguir sem este complemento.</a>
     </div>
   </section>
-
-
 
 </div>`;
 

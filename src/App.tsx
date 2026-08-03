@@ -2,23 +2,43 @@ import React, { useState } from 'react';
 import { UpsellPage } from './components/UpsellPage';
 import { defaultUpsellConfig } from './data/initialData';
 import { UpsellConfig } from './types';
+import { computeDynamicCheckoutUrl } from './lib/urlUtils';
 
 export default function App() {
   const [upsellConfig, setUpsellConfig] = useState<UpsellConfig>(defaultUpsellConfig);
 
   // When customer clicks "Accept Upsell"
-  const handleAcceptUpsell = () => {
-    if (upsellConfig.paradiseCheckoutUrl && upsellConfig.paradiseCheckoutUrl !== '#' && upsellConfig.paradiseCheckoutUrl !== '#accept') {
-      window.location.href = upsellConfig.paradiseCheckoutUrl;
+  const handleAcceptUpsell = (customTargetUrl?: string) => {
+    const computed = computeDynamicCheckoutUrl(upsellConfig);
+    const targetUrl = customTargetUrl || computed.url;
+
+    if (targetUrl && targetUrl !== '#' && targetUrl !== '#accept') {
+      window.location.href = targetUrl;
     } else {
-      alert("Para testar o redirecionamento, insira o link da sua Área de Membros VIP no botão ⚙️ de configurações (no canto superior direito).");
+      alert("Para testar o redirecionamento, insira o link no botão ⚙️ de configurações (no canto superior direito).");
     }
   };
 
   // When customer clicks "Decline"
   const handleDeclineUpsell = () => {
     if (upsellConfig.declineUrl && upsellConfig.declineUrl !== '#' && upsellConfig.declineUrl !== '#decline') {
-      window.location.href = upsellConfig.declineUrl;
+      let declineTarget = upsellConfig.declineUrl;
+      // forward url parameters if present
+      if (typeof window !== 'undefined' && window.location.search && upsellConfig.forwardUrlParams !== false) {
+        try {
+          const urlObj = new URL(declineTarget);
+          const currentParams = new URLSearchParams(window.location.search);
+          currentParams.forEach((val, key) => {
+            if (!urlObj.searchParams.has(key)) {
+              urlObj.searchParams.set(key, val);
+            }
+          });
+          declineTarget = urlObj.toString();
+        } catch {
+          declineTarget += (declineTarget.includes('?') ? '&' : '?') + window.location.search.replace(/^\?/, '');
+        }
+      }
+      window.location.href = declineTarget;
     } else {
       alert("Para testar o redirecionamento, insira o link da sua Área de Membros Padrão no botão ⚙️ de configurações (no canto superior direito).");
     }

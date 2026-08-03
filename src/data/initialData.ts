@@ -4,11 +4,47 @@ export const defaultUpsellConfig: UpsellConfig = {
   headline: "Seu primeiro passo já está garantido. Falta a parte que te ajuda a agir diferente no instante em que o coração passa de 100 batimentos e a razão desliga.",
   subheadline: "Entender a origem do gatilho é metade do caminho — e essa parte você já garantiu. A outra metade não fica só na teoria: é ter uma resposta pronta pro momento em que o corpo já está tenso, o coração acelerado, e a cabeça ainda não alcançou.",
   price: "24,50",
-  paradiseCheckoutUrl: "https://compraonlineseguura.com/c/14da32acba",
+  paradiseCheckoutUrl: "https://compraonlineseguura.com/c/e39ff0881a",
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
   productImage: "https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png",
   timerMinutes: 10,
   useVectorMockup: true,
+  forwardUrlParams: true,
+  dynamicTokenInUrl: true,
+  bonusRules: [
+    {
+      id: 'rule-combo-all',
+      bonusName: 'Combo Completo (Interesse nos 3 Bônus)',
+      paramKey: 'combo',
+      paramValue: 'true',
+      checkoutUrl: 'https://compraonlineseguura.com/c/e39ff0881a',
+      description: 'Oferece o pacote com os 3 bônus integrados por R$ 24,50'
+    },
+    {
+      id: 'rule-b1',
+      bonusName: 'Bônus 1: Protocolo de Regulação',
+      paramKey: 'b1',
+      paramValue: '1',
+      checkoutUrl: 'https://compraonlineseguura.com/c/14da32acba',
+      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 1'
+    },
+    {
+      id: 'rule-b2',
+      bonusName: 'Bônus 2: Mapa Pessoal do Gatilho',
+      paramKey: 'b2',
+      paramValue: '1',
+      checkoutUrl: 'https://compraonlineseguura.com/c/cd7eb4c0c6',
+      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 2'
+    },
+    {
+      id: 'rule-b3',
+      bonusName: 'Bônus 3: Guia de Reconexão',
+      paramKey: 'b3',
+      paramValue: '1',
+      checkoutUrl: 'https://compraonlineseguura.com/c/f2a3b0f24e',
+      description: 'Redirecionamento exclusivo se o cliente já comprou apenas o Bônus 3'
+    }
+  ]
 };
 
 export const bonusModulesData: BonusModule[] = [

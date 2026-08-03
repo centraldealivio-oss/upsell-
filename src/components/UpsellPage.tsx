@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { UpsellConfig } from '../types';
-import { Check, ShieldCheck, AlertTriangle, ExternalLink, Settings2, Copy, CheckCircle, Code, X, Sparkles, Image, Box } from 'lucide-react';
+import { UpsellConfig, BonusTokenRule } from '../types';
+import { Check, ShieldCheck, AlertTriangle, ExternalLink, Settings2, Copy, CheckCircle, Code, X, Sparkles, Image, Box, Link2, Zap, HelpCircle } from 'lucide-react';
 import { CodeExporter } from './CodeExporter';
 import { BookMockup3D, resolveImageUrl } from './BookMockup3D';
+import { computeDynamicCheckoutUrl, ComputedUrlResult } from '../lib/urlUtils';
 
 interface UpsellPageProps {
   config: UpsellConfig;
   setConfig: React.Dispatch<React.StateAction<UpsellConfig>>;
-  onAcceptUpsell: () => void;
+  onAcceptUpsell: (customTargetUrl?: string) => void;
   onDeclineUpsell: () => void;
 }
 
@@ -22,6 +23,18 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
   const [showExportModal, setShowExportModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeToast, setActiveToast] = useState<{ name: string; city: string; timeAgo: string } | null>(null);
+  
+  // Test simulator for query parameters (e.g., ?b1=1 or ?token=14da32acba)
+  const [simulatedQuery, setSimulatedQuery] = useState<string>('');
+  const [computedResult, setComputedResult] = useState<ComputedUrlResult>(() =>
+    computeDynamicCheckoutUrl(config, '')
+  );
+
+  // Recalculate dynamic URL whenever config or simulated query changes
+  useEffect(() => {
+    const currentSearch = simulatedQuery || (typeof window !== 'undefined' ? window.location.search : '');
+    setComputedResult(computeDynamicCheckoutUrl(config, currentSearch));
+  }, [config, simulatedQuery]);
 
   // Countdown timer logic
   useEffect(() => {
@@ -32,28 +45,30 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
   }, []);
 
   const handleAcceptClick = (e: React.MouseEvent) => {
+    const currentSearch = simulatedQuery || (typeof window !== 'undefined' ? window.location.search : '');
+    const dynamicResult = computeDynamicCheckoutUrl(config, currentSearch);
+
     const isPreview = window.location.hostname.includes('ais-dev') || 
                       window.location.hostname.includes('run.app') || 
                       window.location.hostname.includes('localhost');
     
     if (isPreview) {
       e.preventDefault();
-      onAcceptUpsell();
+      onAcceptUpsell(dynamicResult.url);
       return;
     }
 
-    // Se o cliente NÃO veio do checkout da Paradise (sem o parâmetro fpay na URL)
-    const urlParams = new URLSearchParams(window.location.search);
+    // Se o cliente veio do checkout com params ou se temos um redirecionamento configurado
+    const urlParams = new URLSearchParams(currentSearch);
     const hasFpay = urlParams.has('fpay') || urlParams.has('fpay_id') || urlParams.has('transaction_id');
 
     if (!hasFpay) {
-      // Evita o erro "fpay ou offer_hash ausentes" do script e vai direto para o Checkout do Upsell
       e.preventDefault();
       e.stopPropagation();
-      if (config.paradiseCheckoutUrl && config.paradiseCheckoutUrl !== '#') {
-        window.location.href = config.paradiseCheckoutUrl;
+      if (dynamicResult.url && dynamicResult.url !== '#') {
+        window.location.href = dynamicResult.url;
       } else {
-        onAcceptUpsell();
+        onAcceptUpsell(dynamicResult.url);
       }
     }
   };
@@ -81,24 +96,62 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
     return () => clearInterval(toastInterval);
   }, []);
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(config.paradiseCheckoutUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
+  const handleRuleChange = (index: number, field: keyof BonusTokenRule, value: string) => {
+    if (!config.bonusRules) return;
+    const updatedRules = [...config.bonusRules];
+    updatedRules[index] = { ...updatedRules[index], [field]: value };
+    setConfig({ ...config, bonusRules: updatedRules });
+  };
+
+  const handleAddRule = () => {
+    const newRule: BonusTokenRule = {
+      id: `rule-${Date.now()}`,
+      bonusName: 'Novo Bônus / Token',
+      paramKey: 'b1',
+      paramValue: '1',
+      checkoutUrl: config.paradiseCheckoutUrl,
+      description: 'Regra de redirecionamento para parâmetro específico'
+    };
+    setConfig({
+      ...config,
+      bonusRules: [...(config.bonusRules || []), newRule]
+    });
+  };
+
+  const handleRemoveRule = (index: number) => {
+    if (!config.bonusRules) return;
+    const updatedRules = config.bonusRules.filter((_, i) => i !== index);
+    setConfig({ ...config, bonusRules: updatedRules });
   };
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans relative selection:bg-red-600 selection:text-white">
 
+      {/* SECRET DEV / ADMIN TOGGLE VIA URL ?admin=1 */}
+      {typeof window !== 'undefined' && window.location.search.includes('admin=1') && (
+        <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
+          <button
+            onClick={() => setShowConfigDrawer(true)}
+            className="bg-zinc-900/90 hover:bg-zinc-800 text-white border border-zinc-700/80 px-3 py-2 rounded-xl text-xs font-semibold backdrop-blur shadow-xl flex items-center gap-2 transition cursor-pointer"
+            title="Configurar Automação de Links e Bônus"
+          >
+            <Settings2 className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <span className="hidden sm:inline">Automação de Bônus & Links</span>
+          </button>
+        </div>
+      )}
 
       {/* CONFIGURATION DRAWER */}
       {showConfigDrawer && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
-          <div className="bg-zinc-900 border-l border-zinc-800 w-full max-w-md p-6 overflow-y-auto space-y-6 shadow-2xl relative">
+          <div className="bg-zinc-900 border-l border-zinc-800 w-full max-w-lg p-6 overflow-y-auto space-y-6 shadow-2xl relative">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
               <div className="flex items-center gap-2">
-                <Settings2 className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-bold text-white">Configurar Automação dos Links</h3>
+                <Settings2 className="w-5 h-5 text-emerald-400" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Automação de Bônus & Checkout</h3>
+                  <p className="text-[11px] text-zinc-400">Redirecione o cliente conforme os bônus comprados</p>
+                </div>
               </div>
               <button
                 onClick={() => setShowConfigDrawer(false)}
@@ -108,97 +161,195 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
               </button>
             </div>
 
-            <div className="space-y-4 text-xs text-zinc-300">
+            <div className="space-y-5 text-xs text-zinc-300">
+
+              {/* SIMULATOR QUICK TEST */}
+              <div className="bg-emerald-950/30 border border-emerald-500/30 p-3.5 rounded-xl space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
+                    <Zap className="w-4 h-4" />
+                    Simular Entrada de Cliente por Bônus/Token
+                  </span>
+                  <span className="text-[10px] text-emerald-300/80">Teste em Tempo Real</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-normal">
+                  Selecione um cenário abaixo para ver o botão verde mudar de destino automaticamente conforme o que o cliente comprou:
+                </p>
+                <div className="grid grid-cols-2 gap-1.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setSimulatedQuery('?combo=true')}
+                    className={`px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition ${
+                      simulatedQuery === '?combo=true'
+                        ? 'border-emerald-400 bg-emerald-900/50 text-white font-bold'
+                        : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700'
+                    }`}
+                  >
+                    📦 Combo 3 Bônus (Default)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSimulatedQuery('?b1=1')}
+                    className={`px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition ${
+                      simulatedQuery === '?b1=1'
+                        ? 'border-emerald-400 bg-emerald-900/50 text-white font-bold'
+                        : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700'
+                    }`}
+                  >
+                    🎵 Cliente comprou Bônus 1
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSimulatedQuery('?b2=1')}
+                    className={`px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition ${
+                      simulatedQuery === '?b2=1'
+                        ? 'border-emerald-400 bg-emerald-900/50 text-white font-bold'
+                        : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700'
+                    }`}
+                  >
+                    📄 Cliente comprou Bônus 2
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSimulatedQuery('?b3=1')}
+                    className={`px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition ${
+                      simulatedQuery === '?b3=1'
+                        ? 'border-emerald-400 bg-emerald-900/50 text-white font-bold'
+                        : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700'
+                    }`}
+                  >
+                    📋 Cliente comprou Bônus 3
+                  </button>
+                </div>
+
+                {/* CURRENT RESOLVED LINK DISPLAY */}
+                <div className="mt-2 p-2 bg-black/60 rounded-lg border border-emerald-500/20 text-[10px] space-y-1 font-mono">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span>Regra Ativa:</span>
+                    <span className="text-emerald-400 font-bold">
+                      {computedResult.matchedRuleName || 'Checkout Padrão (Combo)'}
+                    </span>
+                  </div>
+                  <div className="text-zinc-300 truncate">
+                    <span>Target URL: </span>
+                    <span className="text-emerald-300 font-semibold">{computedResult.url}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* DEFAULT MAIN COMBO LINK */}
               <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
                 <label className="font-bold text-emerald-400 block">
-                  1. Link da Área de Membros VIP (Aceitou Upsell R$ 9,90)
+                  1. Link Padrão / Combo Completo (Todos os 3 Bônus)
                 </label>
                 <p className="text-[11px] text-zinc-400">
-                  URL para onde o cliente será direcionado após o pagamento aprovado do upsell na Paradise.
+                  Link do botão verde quando o cliente tiver interesse nos 3 bônus de uma vez ou não tiver parâmetros de bônus na URL.
                 </p>
                 <input
                   type="url"
                   value={config.paradiseCheckoutUrl}
                   onChange={(e) => setConfig({ ...config, paradiseCheckoutUrl: e.target.value })}
-                  placeholder="https://suaareademembros.com/vip"
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs font-mono focus:border-red-500 outline-none"
+                  placeholder="https://compraonlineseguura.com/c/e39ff0881a"
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs font-mono focus:border-emerald-500 outline-none"
                 />
               </div>
 
+              {/* BONUS SPECIFIC REDIRECT RULES */}
+              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="font-bold text-amber-400 block">
+                      2. Mapeamento de Links por Bônus / Token
+                    </label>
+                    <p className="text-[11px] text-zinc-400">
+                      Configure qual link do produto abrir quando o cliente comprar um bônus específico na etapa anterior.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddRule}
+                    className="bg-zinc-800 hover:bg-zinc-700 text-amber-300 px-2.5 py-1 rounded-lg text-[10px] font-bold border border-amber-500/30 flex items-center gap-1 cursor-pointer"
+                  >
+                    + Nova Regra
+                  </button>
+                </div>
+
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  {(config.bonusRules || []).map((rule, idx) => (
+                    <div key={rule.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-3 space-y-2 relative group">
+                      <div className="flex items-center justify-between">
+                        <input
+                          type="text"
+                          value={rule.bonusName}
+                          onChange={(e) => handleRuleChange(idx, 'bonusName', e.target.value)}
+                          className="bg-transparent font-bold text-amber-200 text-xs focus:outline-none border-b border-dashed border-zinc-700 focus:border-amber-400"
+                          placeholder="Nome da Regra/Bônus"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveRule(idx)}
+                          className="text-zinc-500 hover:text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded"
+                        >
+                          Remover
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                        <div>
+                          <span className="text-zinc-400 block text-[10px]">Parâmetro da URL:</span>
+                          <input
+                            type="text"
+                            value={rule.paramKey}
+                            onChange={(e) => handleRuleChange(idx, 'paramKey', e.target.value)}
+                            placeholder="ex: b1, ob, token"
+                            className="w-full bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-zinc-200 font-mono text-[11px]"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-zinc-400 block text-[10px]">Valor Esperado:</span>
+                          <input
+                            type="text"
+                            value={rule.paramValue}
+                            onChange={(e) => handleRuleChange(idx, 'paramValue', e.target.value)}
+                            placeholder="ex: 1, bonus1"
+                            className="w-full bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-zinc-200 font-mono text-[11px]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-zinc-400 block text-[10px]">Link do Checkout do Produto para este Bônus:</span>
+                        <input
+                          type="text"
+                          value={rule.checkoutUrl}
+                          onChange={(e) => handleRuleChange(idx, 'checkoutUrl', e.target.value)}
+                          placeholder="https://compraonlineseguura.com/c/SEUTOKEN"
+                          className="w-full bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-emerald-400 font-mono text-[11px]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* DECLINE LINK */}
               <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
                 <label className="font-bold text-red-400 block">
-                  2. Link da Área de Membros Padrão (Recusou Upsell)
+                  3. Link da Área de Membros Padrão (Recusou Upsell)
                 </label>
-                <p className="text-[11px] text-zinc-400">
-                  URL para onde o cliente vai quando clicar em "Não, obrigada. Prefiro seguir sem este complemento".
-                </p>
                 <input
                   type="text"
                   value={config.declineUrl}
                   onChange={(e) => setConfig({ ...config, declineUrl: e.target.value })}
-                  placeholder="https://suaareademembros.com/login"
+                  placeholder="https://area.centraldealivio.com.br/?token=..."
                   className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs font-mono focus:border-red-500 outline-none"
                 />
               </div>
 
-              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
-                <label className="font-bold text-amber-400 block flex items-center justify-between">
-                  <span>3. Visual do Produto na Página</span>
-                  <span className="text-[10px] text-zinc-400 font-normal">Qualidade HD</span>
-                </label>
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setConfig({ ...config, useVectorMockup: true })}
-                    className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition ${
-                      config.useVectorMockup !== false
-                        ? 'border-amber-500 bg-amber-950/30 text-amber-200'
-                        : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 font-bold text-xs">
-                      <Box className="w-4 h-4 text-amber-400" />
-                      <span>Mockup 3D HD</span>
-                    </div>
-                    <span className="text-[10px] opacity-80">100% vetor nítido sem borrado</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setConfig({ ...config, useVectorMockup: false })}
-                    className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition ${
-                      config.useVectorMockup === false
-                        ? 'border-amber-500 bg-amber-950/30 text-amber-200'
-                        : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 font-bold text-xs">
-                      <Image className="w-4 h-4 text-amber-400" />
-                      <span>URL de Imagem</span>
-                    </div>
-                    <span className="text-[10px] opacity-80">Link direto de imagem externa</span>
-                  </button>
-                </div>
-
-                {config.useVectorMockup === false && (
-                  <div className="pt-2 space-y-1.5">
-                    <label className="text-[11px] text-zinc-400 block font-medium">
-                      Link Direto da Imagem (Ex: PostImage, Vercel, S3)
-                    </label>
-                    <input
-                      type="url"
-                      value={config.productImage}
-                      onChange={(e) => setConfig({ ...config, productImage: e.target.value })}
-                      placeholder="https://i.ibb.co/seu-codigo/imagem.png"
-                      className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs font-mono focus:border-red-500 outline-none"
-                    />
-                    <p className="text-[10px] text-amber-400/90 leading-tight">
-                      💡 Dica: Sites como Imgbb encurtam/compactam imagens. Para máxima definição sem borrado, use o <strong>Mockup 3D HD</strong> acima ou cole um link de imagem em alta resolução.
-                    </p>
-                  </div>
-                )}
-              </div>
-
+              {/* PRODUCT MOCKUP TYPE & PRICE */}
               <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
                 <label className="font-bold text-zinc-200 block">
                   4. Preço do Upsell (R$)
@@ -250,6 +401,18 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
         </span>
         <span className="hidden sm:inline">| Não feche nem atualize esta página.</span>
       </div>
+
+      {/* ACTIVE RULE AUTOMATION BADGE (ONLY VISIBLE IF ?admin=1 FOR TESTING) */}
+      {computedResult.isCustomParamActive && typeof window !== 'undefined' && window.location.search.includes('admin=1') && (
+        <div className="bg-emerald-950/80 border-b border-emerald-500/40 py-2 px-4 text-center text-xs font-semibold text-emerald-200 flex items-center justify-center gap-2 animate-fade-in">
+          <Zap className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Automação Ativa:</span>
+          <span className="bg-emerald-800/80 text-emerald-100 px-2 py-0.5 rounded font-mono font-bold text-[11px]">
+            {computedResult.matchedRuleName || `Token ${computedResult.tokenDetected}`}
+          </span>
+          <span className="text-zinc-400 hidden md:inline">→ Direciona para: {computedResult.url}</span>
+        </div>
+      )}
 
       {/* MAIN UPSELL CONTENT */}
       <div className="max-w-[860px] mx-auto px-4 py-10 sm:py-16">
