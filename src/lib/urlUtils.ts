@@ -20,7 +20,7 @@ export function computeDynamicCheckoutUrl(
 
   const urlParams = new URLSearchParams(searchStr);
 
-  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://compraonlineseguura.com/c/e39ff0881a';
+  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://compraonlineseguura.com/c/eb3f66e437';
   let matchedRuleName: string | undefined = undefined;
   let isCustomParamActive = false;
 
