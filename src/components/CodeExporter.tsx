@@ -92,13 +92,16 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
         var p = new URLSearchParams(window.location.search);
 
         // Check order bumps & tokens for decline link redirection
-        var hasB1 = p.get('b1') === '1' || p.get('b1') === 'true' || p.get('ob1') === '1';
-        var hasB2 = p.get('b2') === '1' || p.get('b2') === 'true' || p.get('ob2') === '1';
-        var hasB3 = p.get('b3') === '1' || p.get('b3') === 'true' || p.get('ob3') === '1';
-        var isSupremo = p.get('supremo') === 'true' || p.get('supremo') === '1';
-        var isCombo = p.get('combo') === 'true' || p.get('combo') === '1';
+        var rawSearch = window.location.search.toLowerCase();
+        var hasB1 = p.get('b1') === '1' || p.get('b1') === 'true' || p.get('ob1') === '1' || rawSearch.indexOf('ob_32cbb87ef39e091c') !== -1 || rawSearch.indexOf('token-bonus1-bpm100') !== -1;
+        var hasB2 = p.get('b2') === '1' || p.get('b2') === 'true' || p.get('ob2') === '1' || rawSearch.indexOf('ob_e03d0809953977bf') !== -1 || rawSearch.indexOf('token-bonus2-gatilho') !== -1;
+        var hasB3 = p.get('b3') === '1' || p.get('b3') === 'true' || p.get('ob3') === '1' || rawSearch.indexOf('ob_4ad8794a7ab9a473') !== -1 || rawSearch.indexOf('token-bonus3-vinculo') !== -1;
+        var isSupremo = p.get('supremo') === 'true' || p.get('supremo') === '1' || rawSearch.indexOf('paradise-supremo-9999') !== -1;
+        var isCombo = p.get('combo') === 'true' || p.get('combo') === '1' || rawSearch.indexOf('token-all-bonuses') !== -1;
 
-        if ((hasB1 && hasB2 && hasB3) || isSupremo) {
+        var bumpCount = (hasB1 ? 1 : 0) + (hasB2 ? 1 : 0) + (hasB3 ? 1 : 0);
+
+        if (bumpCount >= 2 || isSupremo) {
           declTarget = "https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999";
         } else if (isCombo) {
           declTarget = "https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES";
@@ -268,7 +271,7 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
     <div>
       <button class="paradise-upsell-btn" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta por apenas R$ ${config.price}!</button>
       <br>
-      <a href="${config.declineUrl}" class="lp-btn-ghost">Não, obrigada. Prefiro seguir sem este complemento.</a>
+      <a href="${config.declineUrl}" class="lp-btn-ghost" id="decline-link">Já adquiri meu produto, quero continuar</a>
     </div>
   </section>
 

@@ -493,9 +493,9 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
 
             <button
               onClick={() => onDeclineUpsell(computedResult.declineUrl)}
-              className="w-full text-zinc-300 hover:text-white text-sm sm:text-base font-semibold underline underline-offset-4 py-3.5 px-5 rounded-xl border border-zinc-800/80 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/80 transition cursor-pointer shadow-md"
+              className="w-full text-zinc-300 hover:text-white text-sm sm:text-base font-semibold underline underline-offset-4 mt-3 py-3 px-4 rounded-xl border border-zinc-800/80 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/80 transition cursor-pointer shadow-md"
             >
-              Não, obrigada. Prefiro seguir sem este complemento.
+              Já adquiri meu produto, quero continuar
             </button>
           </div>
         </div>

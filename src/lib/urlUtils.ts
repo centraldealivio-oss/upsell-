@@ -26,16 +26,51 @@ export function computeDynamicCheckoutUrl(
   let matchedRuleName: string | undefined = undefined;
   let isCustomParamActive = false;
 
-  const hasB1 = urlParams.get('b1') === '1' || urlParams.get('b1') === 'true' || urlParams.get('ob1') === '1';
-  const hasB2 = urlParams.get('b2') === '1' || urlParams.get('b2') === 'true' || urlParams.get('ob2') === '1';
-  const hasB3 = urlParams.get('b3') === '1' || urlParams.get('b3') === 'true' || urlParams.get('ob3') === '1';
-  const isSupremoFlag = urlParams.get('supremo') === 'true' || urlParams.get('supremo') === '1';
-  const isComboFlag = urlParams.get('combo') === 'true' || urlParams.get('combo') === '1';
+  const searchLower = searchStr.toLowerCase();
 
-  // 1. Prioridade Máxima: Se o cliente comprou TODOS os 3 order bumps no checkout anterior (SUPREMO / ALL-BONUSES)
-  if ((hasB1 && hasB2 && hasB3) || isSupremoFlag) {
+  const hasB1 =
+    urlParams.get('b1') === '1' ||
+    urlParams.get('b1') === 'true' ||
+    urlParams.get('ob1') === '1' ||
+    searchLower.includes('ob_32cbb87ef39e091c') ||
+    searchLower.includes('token-bonus1-bpm100');
+
+  const hasB2 =
+    urlParams.get('b2') === '1' ||
+    urlParams.get('b2') === 'true' ||
+    urlParams.get('ob2') === '1' ||
+    searchLower.includes('ob_e03d0809953977bf') ||
+    searchLower.includes('token-bonus2-gatilho');
+
+  const hasB3 =
+    urlParams.get('b3') === '1' ||
+    urlParams.get('b3') === 'true' ||
+    urlParams.get('ob3') === '1' ||
+    searchLower.includes('ob_4ad8794a7ab9a473') ||
+    searchLower.includes('token-bonus3-vinculo');
+
+  const isSupremoFlag =
+    urlParams.get('supremo') === 'true' ||
+    urlParams.get('supremo') === '1' ||
+    searchLower.includes('paradise-supremo-9999');
+
+  const isComboFlag =
+    urlParams.get('combo') === 'true' ||
+    urlParams.get('combo') === '1' ||
+    searchLower.includes('token-all-bonuses');
+
+  // Count how many order bumps were bought
+  const bumpCount = (hasB1 ? 1 : 0) + (hasB2 ? 1 : 0) + (hasB3 ? 1 : 0);
+
+  // 1. Prioridade Máxima: Se comprou os 3 order bumps, ou Supremo flag, ou 2+ order bumps
+  if (bumpCount >= 3 || isSupremoFlag) {
     targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999';
     matchedRuleName = '👑 Nível SUPREMO (Comunidade VIP Black)';
+    isCustomParamActive = true;
+  } else if (bumpCount === 2) {
+    // Se comprou 2 bônus no checkout anterior, eleva para o nível Supremo ou Combo
+    targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999';
+    matchedRuleName = '👑 Nível SUPREMO (2 Bônus Adquiridos)';
     isCustomParamActive = true;
   } else if (isComboFlag) {
     targetDeclineUrl = 'https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES';
