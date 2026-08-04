@@ -437,26 +437,31 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
           </div>
 
           {/* CHECKLIST HIGHLIGHTS */}
-          <div className="max-w-[500px] mx-auto text-left space-y-3 mb-8 text-zinc-300 text-sm">
+          <div className="max-w-[540px] mx-auto text-left space-y-3.5 mb-8 text-zinc-300 text-sm">
             <div className="flex items-start gap-2.5">
               <span className="text-red-500 font-extrabold text-base flex-shrink-0">✓</span>
               <span>
-                <strong>Complemento oficial</strong> do Método Antes da Explosão, feito para fechar sua jornada com segurança.
+                <strong>Tarefas guiadas de autoajuda</strong> — ações pequenas e práticas pro seu dia a dia, não só teoria pra ler e guardar.
               </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="text-red-500 font-extrabold text-base flex-shrink-0">✓</span>
               <span>
-                <strong>Sem novo cadastro</strong> — liberado junto ao material que você já garantiu na Paradise.
+                <strong>Dicas de rotina</strong> — pra sustentar a mudança nos dias comuns, não só nos dias de crise.
               </span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="text-red-500 font-extrabold text-base flex-shrink-0">✓</span>
               <span>
-                <strong>Acesso imediato</strong>, pensado para você se sentir amparada em cada etapa.
+                <strong>Comunidade VIP só de mulheres</strong> — um espaço pra trocar experiência com quem está vivendo o mesmo processo. Ninguém devia atravessar isso sozinha.
               </span>
             </div>
           </div>
+
+          {/* REASSURANCE TEXT ABOVE PRICE */}
+          <p className="text-zinc-300 text-xs sm:text-sm max-w-[580px] mx-auto mb-6 leading-relaxed bg-zinc-900/40 p-4 rounded-xl border border-zinc-800/60 text-center">
+            Fique tranquila — o que você já adquiriu vai te entregar valor sozinho, e o bônus vai continuar disponível pra desbloquear sempre que você precisar. Nenhum substitui o outro: o produto principal e cada bônus são experiências únicas, pensadas pra se somarem, não pra competirem entre si.
+          </p>
 
           {/* PRICE CALLOUT BADGE */}
           <div className="mb-6 inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-zinc-950 via-emerald-950/60 to-zinc-950 border border-emerald-500/50 px-6 py-3 rounded-2xl shadow-xl">
@@ -488,7 +493,7 @@ export const UpsellPage: React.FC<UpsellPageProps> = ({
               data-modal-btn-text-color="#ffffff"
               onClick={handleAcceptClick}
             >
-              Sim, eu quero esta oferta por apenas R$ {config.price}!
+              Sim, Eu quero garantir meu 3 bonus exclusivos por apenas R$ {config.price}!
             </button>
 
             <button

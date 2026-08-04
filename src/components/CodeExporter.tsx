@@ -256,11 +256,16 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
       <img src="${config.productImage.includes('ibb.co/LDymbnzd') ? 'https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png' : config.productImage.includes('ibb.co/Q3vt1Xjv') ? 'https://i.ibb.co/cShV7xXh/Captura-de-tela-2026-07-28-163516.png' : config.productImage}" alt="Mente Inabalável - 3 Livros" class="lp-img" referrerpolicy="no-referrer" style="width: 100%; height: auto; display: block; object-fit: contain; margin: 0 auto;">
     </div>
 
-    <div style="text-align: left; max-width: 500px; margin: 0 auto 24px auto;">
-      <div class="lp-checkline"><span class="lp-check">✓</span> Complemento oficial do Método Antes da Explosão, feito para fechar sua jornada com segurança</div>
-      <div class="lp-checkline"><span class="lp-check">✓</span> Sem novo cadastro — liberado junto ao material que você já garantiu na Paradise</div>
-      <div class="lp-checkline"><span class="lp-check">✓</span> Acesso imediato, pensado para você se sentir amparada em cada etapa</div>
+    <div style="text-align: left; max-width: 560px; margin: 0 auto 24px auto;">
+      <div class="lp-checkline"><span class="lp-check">✓</span> <strong>Tarefas guiadas de autoajuda</strong> — ações pequenas e práticas pro seu dia a dia, não só teoria pra ler e guardar.</div>
+      <div class="lp-checkline"><span class="lp-check">✓</span> <strong>Dicas de rotina</strong> — pra sustentar a mudança nos dias comuns, não só nos dias de crise.</div>
+      <div class="lp-checkline"><span class="lp-check">✓</span> <strong>Comunidade VIP só de mulheres</strong> — um espaço pra trocar experiência com quem está vivendo o mesmo processo. Ninguém devia atravessar isso sozinha.</div>
     </div>
+
+    <!-- TEXTO REASSURADOR ACIMA DO PREÇO -->
+    <p style="color: #d4d4d8; font-size: 14px; line-height: 1.5; max-width: 580px; margin: 0 auto 24px auto; text-align: center; background: rgba(24, 24, 27, 0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+      Fique tranquila — o que você já adquiriu vai te entregar valor sozinho, e o bônus vai continuar disponível pra desbloquear sempre que você precisar. Nenhum substitui o outro: o produto principal e cada bônus são experiências únicas, pensadas pra se somarem, não pra competirem entre si.
+    </p>
 
     <!-- DESTAQUE DE PREÇO -->
     <div class="lp-price-tag">
@@ -269,7 +274,7 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
     </div>
 
     <div>
-      <button class="paradise-upsell-btn" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, eu quero esta oferta por apenas R$ ${config.price}!</button>
+      <button class="paradise-upsell-btn" style="background-color: #28a745; color: #ffffff; padding: 18px 28px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; max-width: 540px; box-shadow: 0 10px 25px rgba(40,167,69,0.3);" data-offer-hash="upsell_bef5645643e1bfd7" data-modal-title="Finalize com PIX para garantir seu bonus Exclusivo!" data-copy-button-text="Copiar Código PIX" data-modal-bg="#ffffff" data-modal-title-color="#000000" data-modal-btn-color="#000000" data-modal-btn-text-color="#ffffff">Sim, Eu quero garantir meu 3 bonus exclusivos por apenas R$ ${config.price}!</button>
       <br>
       <a href="${config.declineUrl}" class="lp-btn-ghost" id="decline-link">Já adquiri meu produto, quero continuar</a>
     </div>

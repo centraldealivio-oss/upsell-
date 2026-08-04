@@ -1,9 +1,9 @@
 import { BonusModule, CommunityPost, UpsellConfig } from '../types';
 
 export const defaultUpsellConfig: UpsellConfig = {
-  headline: "Seu primeiro passo já está garantido. Falta a parte que te ajuda a agir diferente no instante em que o coração passa de 100 batimentos e a razão desliga.",
-  subheadline: "Entender a origem do gatilho é metade do caminho — e essa parte você já garantiu. A outra metade não fica só na teoria: é ter uma resposta pronta pro momento em que o corpo já está tenso, o coração acelerado, e a cabeça ainda não alcançou.",
-  price: "24,50",
+  headline: "Você já garantiu o conteúdo principal — e parte dos complementos. Sinta-se à vontade pra testar o que você já tem, no seu ritmo. Os outros ficam liberados pra desbloquear quando fizer sentido pra você, direto na sua área de membros.",
+  subheadline: "Mas se esse momento é agora: os 3 bônus estão com uma promoção ativa, porque juntos eles são a peça que falta pra uma experiência completa.",
+  price: "21,50",
   paradiseCheckoutUrl: "https://compraonlineseguura.com/c/eb3f66e437",
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
   productImage: "https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png",
