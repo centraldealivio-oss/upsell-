@@ -21,7 +21,7 @@ export function computeDynamicCheckoutUrl(
 
   const urlParams = new URLSearchParams(searchStr);
 
-  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://compraonlineseguura.com/c/eb3f66e437';
+  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://checkoutonline.org.ua/c/71f8ea06a3';
   let targetDeclineUrl = config.declineUrl || 'https://area.centraldealivio.com.br/?token=PARADISE-STD-1234';
   let matchedRuleName: string | undefined = undefined;
   let isCustomParamActive = false;
@@ -144,7 +144,7 @@ export function computeDynamicCheckoutUrl(
       if (targetBaseUrl.includes('/c/')) {
         targetBaseUrl = targetBaseUrl.replace(/\/c\/[a-zA-Z0-9]+/, `/c/${directToken}`);
       } else {
-        targetBaseUrl = `https://compraonlineseguura.com/c/${directToken}`;
+        targetBaseUrl = `https://checkoutonline.org.ua/c/${directToken}`;
       }
     }
   }

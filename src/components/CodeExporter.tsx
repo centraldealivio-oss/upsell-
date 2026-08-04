@@ -51,7 +51,7 @@ export const CodeExporter: React.FC<CodeExporterProps> = ({ config }) => {
           if (target.indexOf('/c/') !== -1) {
             target = target.replace(/\\/c\\/[a-zA-Z0-9]+/, '/c/' + directToken);
           } else {
-            target = 'https://compraonlineseguura.com/c/' + directToken;
+            target = 'https://checkoutonline.org.ua/c/' + directToken;
           }
         }
       }

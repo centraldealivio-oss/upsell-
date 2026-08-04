@@ -4,7 +4,7 @@ export const defaultUpsellConfig: UpsellConfig = {
   headline: "Você já garantiu o conteúdo principal — e parte dos complementos. Sinta-se à vontade pra testar o que você já tem, no seu ritmo. Os outros ficam liberados pra desbloquear quando fizer sentido pra você, direto na sua área de membros.",
   subheadline: "Mas se esse momento é agora: os 3 bônus estão com uma promoção ativa, porque juntos eles são a peça que falta pra uma experiência completa.",
   price: "21,50",
-  paradiseCheckoutUrl: "https://compraonlineseguura.com/c/eb3f66e437",
+  paradiseCheckoutUrl: "https://checkoutonline.org.ua/c/71f8ea06a3",
   declineUrl: "https://area.centraldealivio.com.br/?token=PARADISE-STD-1234",
   productImage: "https://i.ibb.co/MyHrWMDk/Chat-GPT-Image-2-de-ago-de-2026-19-25-09.png",
   timerMinutes: 10,
@@ -17,7 +17,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '5. Combo Completo (Principal + Todos os 3 Bônus)',
       paramKey: 'combo',
       paramValue: 'true',
-      checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-ALL-BONUSES',
       description: 'Liberado: Ebook + Audiobook + Bônus 1 + Bônus 2 + Bônus 3'
     },
@@ -26,7 +26,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '2. Principal + Bônus 1 (Protocolo 100 BPM)',
       paramKey: 'b1',
       paramValue: '1',
-      checkoutUrl: 'https://compraonlineseguura.com/c/14da32acba',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS1-BPM100',
       description: 'Liberado: Produto Principal + Bônus 1 (Áudios SOS & Bio-Feedback)'
     },
@@ -35,7 +35,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '3. Principal + Bônus 2 (Raio-X do Gatilho)',
       paramKey: 'b2',
       paramValue: '1',
-      checkoutUrl: 'https://compraonlineseguura.com/c/cd7eb4c0c6',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS2-GATILHO',
       description: 'Liberado: Produto Principal + Bônus 2 (Diagnosticador Neuro-Comportamental)'
     },
@@ -44,7 +44,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '4. Principal + Bônus 3 (Blindagem do Vínculo)',
       paramKey: 'b3',
       paramValue: '1',
-      checkoutUrl: 'https://compraonlineseguura.com/c/f2a3b0f24e',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=TOKEN-BONUS3-VINCULO',
       description: 'Liberado: Produto Principal + Bônus 3 (Gerador de Acordo/Contrato)'
     },
@@ -53,7 +53,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '1. Somente Produto Principal (Ebook + Audiobook)',
       paramKey: 'std',
       paramValue: '1',
-      checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=PARADISE-STD-1234',
       description: 'Liberado: Ebook "Antes da Explosão" + Narração MP3'
     },
@@ -62,7 +62,7 @@ export const defaultUpsellConfig: UpsellConfig = {
       bonusName: '👑 Nível SUPREMO (Comunidade VIP Black)',
       paramKey: 'supremo',
       paramValue: 'true',
-      checkoutUrl: 'https://compraonlineseguura.com/c/eb3f66e437',
+      checkoutUrl: 'https://checkoutonline.org.ua/c/71f8ea06a3',
       declineUrl: 'https://area.centraldealivio.com.br/?token=PARADISE-SUPREMO-9999',
       description: 'Liberado: Produto Principal + 3 Bônus + Acesso à Comunidade VIP Black'
     }
