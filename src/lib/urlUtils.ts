@@ -21,7 +21,7 @@ export function computeDynamicCheckoutUrl(
 
   const urlParams = new URLSearchParams(searchStr);
 
-  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://checkoutonline.org.ua/c/71f8ea06a3';
+  let targetBaseUrl = config.paradiseCheckoutUrl || 'https://checkoutonline.org.ua/c/cd7eb4c0c6';
   let targetDeclineUrl = config.declineUrl || 'https://area.centraldealivio.com.br/?token=PARADISE-STD-1234';
   let matchedRuleName: string | undefined = undefined;
   let isCustomParamActive = false;
